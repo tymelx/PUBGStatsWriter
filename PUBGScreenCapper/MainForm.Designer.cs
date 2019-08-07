@@ -51,6 +51,7 @@ namespace PUBGScreenCapper
             this.txtInterval.Name = "txtInterval";
             this.txtInterval.Size = new System.Drawing.Size(119, 20);
             this.txtInterval.TabIndex = 1;
+            this.txtInterval.TextChanged += new System.EventHandler(this.TxtInterval_TextChanged);
             // 
             // lblInterval
             // 

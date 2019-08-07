@@ -45,6 +45,7 @@ namespace PUBGScreenCapper
                 {
                     applicationSettings.OutputDirectory = fldrDlg.SelectedPath;
                     btnOutputDirectory.Text = applicationSettings.OutputDirectory;
+                    SettingsService.SaveApplicationSettings(applicationSettings);
                 }
             }
         }
@@ -67,7 +68,7 @@ namespace PUBGScreenCapper
         {
             Bitmap bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             Graphics g = Graphics.FromImage(bmpScreenshot);
-            g.CopyFromScreen(100, 100, 500, 500, new Size(400, 400));
+            g.CopyFromScreen(Point.Empty, Point.Empty, Screen.GetBounds(Point.Empty).Size);
 
             string fileName = String.Format("screencap{0}.jpg", currentScreenshotCount++);
             bmpScreenshot.Save(String.Format("{0}\\{1}", applicationSettings.OutputDirectory, fileName), System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -82,6 +83,19 @@ namespace PUBGScreenCapper
             txtInterval.Enabled = true;
 
             btnStop.Enabled = false;
+        }
+
+        private void TxtInterval_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                applicationSettings.Interval = int.Parse(txtInterval.Text);
+                SettingsService.SaveApplicationSettings(applicationSettings);
+            }
+            catch(Exception)
+            {
+
+            }
         }
     }
 }
