@@ -29,6 +29,8 @@ namespace PUBGStatsWriter
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnOCRDirectory = new System.Windows.Forms.Button();
+            this.lblOCR = new System.Windows.Forms.Label();
             this.btnSelectLabelOutputDirectory = new System.Windows.Forms.Button();
             this.lblLabelOutputDirectory = new System.Windows.Forms.Label();
             this.lblPubgName = new System.Windows.Forms.Label();
@@ -42,8 +44,6 @@ namespace PUBGStatsWriter
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnActivate = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
-            this.btnOCRDirectory = new System.Windows.Forms.Button();
-            this.lblOCR = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -62,6 +62,25 @@ namespace PUBGStatsWriter
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Setup (Required)";
+            // 
+            // btnOCRDirectory
+            // 
+            this.btnOCRDirectory.Location = new System.Drawing.Point(125, 82);
+            this.btnOCRDirectory.Name = "btnOCRDirectory";
+            this.btnOCRDirectory.Size = new System.Drawing.Size(188, 23);
+            this.btnOCRDirectory.TabIndex = 2;
+            this.btnOCRDirectory.Text = "Choose...";
+            this.btnOCRDirectory.UseVisualStyleBackColor = true;
+            this.btnOCRDirectory.Click += new System.EventHandler(this.btnOCRDirectory_Click);
+            // 
+            // lblOCR
+            // 
+            this.lblOCR.AutoSize = true;
+            this.lblOCR.Location = new System.Drawing.Point(6, 87);
+            this.lblOCR.Name = "lblOCR";
+            this.lblOCR.Size = new System.Drawing.Size(75, 13);
+            this.lblOCR.TabIndex = 3;
+            this.lblOCR.Text = "OCR Directory";
             // 
             // btnSelectLabelOutputDirectory
             // 
@@ -180,6 +199,7 @@ namespace PUBGStatsWriter
             this.btnActivate.TabIndex = 3;
             this.btnActivate.Text = "Activate";
             this.btnActivate.UseVisualStyleBackColor = true;
+            this.btnActivate.Click += new System.EventHandler(this.btnActivate_Click);
             // 
             // btnStop
             // 
@@ -189,25 +209,7 @@ namespace PUBGStatsWriter
             this.btnStop.TabIndex = 4;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
-            // 
-            // btnOCRDirectory
-            // 
-            this.btnOCRDirectory.Location = new System.Drawing.Point(125, 82);
-            this.btnOCRDirectory.Name = "btnOCRDirectory";
-            this.btnOCRDirectory.Size = new System.Drawing.Size(188, 23);
-            this.btnOCRDirectory.TabIndex = 2;
-            this.btnOCRDirectory.Text = "Choose...";
-            this.btnOCRDirectory.UseVisualStyleBackColor = true;
-            this.btnOCRDirectory.Click += new System.EventHandler(this.btnOCRDirectory_Click);
-            // 
-            // lblOCR
-            // 
-            this.lblOCR.AutoSize = true;
-            this.lblOCR.Location = new System.Drawing.Point(6, 87);
-            this.lblOCR.Name = "lblOCR";
-            this.lblOCR.Size = new System.Drawing.Size(75, 13);
-            this.lblOCR.TabIndex = 3;
-            this.lblOCR.Text = "OCR Directory";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // MainForm
             // 

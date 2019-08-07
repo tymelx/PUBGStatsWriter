@@ -11,11 +11,9 @@ namespace PUBGStatsWriter.Services
 {
     public static class OCRService
     {
-        public static List<string> GetImageWords(Bitmap bitmap)
+        public static string GetImageWords(string imageSource)
         {
             List<string> foundWords = new List<string>();
-
-            bitmap = new Bitmap("C:\\ESD\\pubg5.png");
 
             var Ocr = new IronOcr.AdvancedOcr()
             {
@@ -32,10 +30,8 @@ namespace PUBGStatsWriter.Services
                 ColorDepth = 20
             };
 
-            var Result = Ocr.Read(bitmap);
-            var Text = Result.Text;
-
-            return Text.Split(' ').ToList();
+            var result = Ocr.Read(imageSource);
+            return result.Text;
         }
     }
 }
