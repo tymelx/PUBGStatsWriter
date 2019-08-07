@@ -32,14 +32,26 @@ namespace PUBGStatsWriter
             //Loads settings from text file
             //If settings dont exist, we need to create a default text file
             applicationSettings = SettingsService.GetApplicationSettings();
-            this.txtPubgName.Text = applicationSettings.PUBGName;
+
+            //Default the form values
             this.cbTotalKills.Checked = applicationSettings.TotalKills;
             this.cbTotalDeaths.Checked = applicationSettings.TotalDeaths;
-            this.cbTotalGamesPlayed.Checked = applicationSettings.TotalGamesPlayed;
             this.cbKillDeathRatio.Checked = applicationSettings.KillDeathRatio;
             this.cbTotalWins.Checked = applicationSettings.TotalWins;
+            this.btnStop.Enabled = false;
 
-            btnStop.Enabled = false;
+            this.SetFilenames();
+        }
+
+        /// <summary>
+        /// Sets all the filename labels, call this when updating the labels output directory
+        /// </summary>
+        private void SetFilenames()
+        {
+            lblTotalKillsFilename.Text = applicationSettings.TotalKillsFilePath;
+            lblTotalDeathsFilename.Text = applicationSettings.TotalDeathsFilePath;
+            lblKillDeathRatioFilename.Text = applicationSettings.KillDeathRatioFilePath;
+            lblTotalWinsFilename.Text = applicationSettings.TotalWinsFilePath;
         }
 
         private void btnSelectLabelOutputDirectory_Click(object sender, EventArgs e)
@@ -73,10 +85,8 @@ namespace PUBGStatsWriter
             this.btnActivate.Enabled = false;
             this.btnSelectLabelOutputDirectory.Enabled = false;
             this.btnOCRDirectory.Enabled = false;
-            this.txtPubgName.Enabled = false;
             this.cbTotalKills.Enabled = false;
             this.cbTotalDeaths.Enabled = false;
-            this.cbTotalGamesPlayed.Enabled = false;
             this.cbKillDeathRatio.Enabled = false;
             this.cbTotalWins.Enabled = false;
 
@@ -99,10 +109,8 @@ namespace PUBGStatsWriter
             this.btnActivate.Enabled = true;
             this.btnSelectLabelOutputDirectory.Enabled = true;
             this.btnOCRDirectory.Enabled = true;
-            this.txtPubgName.Enabled = true;
             this.cbTotalKills.Enabled = true;
             this.cbTotalDeaths.Enabled = true;
-            this.cbTotalGamesPlayed.Enabled = true;
             this.cbKillDeathRatio.Enabled = true;
             this.cbTotalWins.Enabled = true;
         }
