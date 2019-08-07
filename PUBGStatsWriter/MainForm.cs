@@ -18,6 +18,7 @@ namespace PUBGStatsWriter
 {
     public partial class MainForm : Form
     {
+        private PUBGStats PUBGStats = new PUBGStats();
         private ApplicationSettings applicationSettings;
         private FileSystemWatcher directoryWatcher;
 
@@ -108,8 +109,60 @@ namespace PUBGStatsWriter
 
         private void OnScreenshotDetected(object source, FileSystemEventArgs e)
         {
+            bool writeOutStats = false;
             directoryWatcher.EnableRaisingEvents = false; //set this while we process
             string imageText = OCRService.GetImageWords(e.FullPath);
+
+            /*
+             * Some hacky ass processing right here, but whatever gets the job done, ya know/
+             */
+            List<string> textParts = imageText.Split(' ')
+                .Select(z => z.ToLower())
+                .ToList();
+
+            if (textParts.Contains("kills"))
+            {
+                try
+                {
+                    int killsIndex = textParts.IndexOf("kills");
+                    int killAmount = int.Parse(textParts[killsIndex - 1]);
+
+                    if (killAmount > PUBGStats.LastTotalKills)
+                    {
+                        PUBGStats.Kills++;
+                        writeOutStats = true;
+                    }
+
+                    PUBGStats.LastTotalKills = killAmount;
+                }
+                catch(Exception ex)
+                {
+                    //Meh
+                }
+            }
+            else if (textParts.Contains("next") || textParts.Any(z => z.IndexOf("time!") > -1))
+            {
+                try
+                {
+                    if (DateTime.UtcNow.AddMinutes(-2) > PUBGStats.LastDeath)
+                    {
+                        //This death ocurred more than 2 minutes after the last, probs real
+                        PUBGStats.Deaths++;
+                        PUBGStats.LastDeath = DateTime.UtcNow;
+                        writeOutStats = true;
+                    }
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
+
+            if (writeOutStats)
+            {
+                PUBGStats.KillDeathRatio = PUBGStats.Kills / PUBGStats.Deaths;
+                FileWriterService.WriteStatsToFiles(applicationSettings, PUBGStats);
+            }
 
             directoryWatcher.EnableRaisingEvents = true;
         }
