@@ -10,8 +10,16 @@ namespace PUBGStatsWriter.Models
     {
         public int Kills { get; set; }
         public int Deaths { get; set; }
+        public int Wins { get; set; }
         public double KillDeathRatio { get; set; }
         public int LastTotalKills { get; set; }
         public DateTime LastDeath { get; set; }
+        public DateTime LastWin { get; set; }
+
+        public PUBGStats()
+        {
+            this.LastDeath = DateTime.UtcNow;
+            this.LastWin = DateTime.UtcNow;
+        }
     }
 }

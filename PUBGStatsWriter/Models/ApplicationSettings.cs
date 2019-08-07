@@ -16,6 +16,7 @@ namespace PUBGStatsWriter.Models
         public bool TotalGamesPlayed { get; set; }
         public bool KillDeathRatio { get; set; }
         public bool TotalWins { get; set; }
+        public bool DeleteImagesAfterProcessing { get; set; }
 
         public string TotalKillsFilePath
         {

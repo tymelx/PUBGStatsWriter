@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace PUBGStatsWriter
         private PUBGStats PUBGStats = new PUBGStats();
         private ApplicationSettings applicationSettings;
         private FileSystemWatcher directoryWatcher;
+
+        private Stopwatch imageProcessingStopWatch = null;
+        private int totalScreenProcessed = 0;
+        private double totalProcessingTime = 0;
+
+        delegate void SetTextCallback(string text); //for weird cross thready stuff
 
         public MainForm()
         {
@@ -124,11 +131,54 @@ namespace PUBGStatsWriter
             this.cbTotalWins.Enabled = true;
         }
 
+        private void SetTotalImagesScannedLabel(string text)
+        {
+            if (this.lblImagesScannedAmount.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetTotalImagesScannedLabel);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.lblImagesScannedAmount.Text = text;
+            }
+        }
+
+        private void SetAverageProcessingTimeLabel(string text)
+        {
+            text = String.Format("{0} seconds", text);
+
+            if (this.lblAverageImageScanTimeAmount.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetAverageProcessingTimeLabel);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.lblAverageImageScanTimeAmount.Text = text;
+            }
+        }
+
         private void OnScreenshotDetected(object source, FileSystemEventArgs e)
         {
             bool writeOutStats = false;
             directoryWatcher.EnableRaisingEvents = false; //set this while we process
+
+            imageProcessingStopWatch = new Stopwatch();
+            imageProcessingStopWatch.Start();
             string imageText = OCRService.GetImageWords(e.FullPath);
+            imageProcessingStopWatch.Stop();
+
+            totalScreenProcessed++;
+            SetTotalImagesScannedLabel(totalScreenProcessed.ToString());
+
+            totalProcessingTime += imageProcessingStopWatch.Elapsed.TotalSeconds;
+            SetAverageProcessingTimeLabel((totalProcessingTime / totalScreenProcessed).ToString());
+
+            if (this.cbDeleteImagesAfterProcessing.Checked)
+            {
+                File.Delete(e.FullPath); //hard delete this mofo, we dont wanna lose space
+            }
 
             /*
              * Some hacky ass processing right here, but whatever gets the job done, ya know/
@@ -174,6 +224,23 @@ namespace PUBGStatsWriter
 
                 }
             }
+            else if (textParts.Contains("winner"))
+            {
+                try
+                {
+                    if (DateTime.UtcNow.AddMinutes(-20) > PUBGStats.LastWin)
+                    {
+                        //This win happened 20 mins after the last, probs real
+                        PUBGStats.Wins++;
+                        PUBGStats.LastWin = DateTime.UtcNow;
+                        writeOutStats = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
 
             if (writeOutStats)
             {
@@ -205,6 +272,12 @@ namespace PUBGStatsWriter
         private void CbTotalWins_CheckedChanged(object sender, EventArgs e)
         {
             applicationSettings.TotalWins = this.cbTotalWins.Checked;
+            SettingsService.SaveApplicationSettings(applicationSettings);
+        }
+
+        private void CbDeleteImagesAfterProcessing_CheckedChanged(object sender, EventArgs e)
+        {
+            applicationSettings.DeleteImagesAfterProcessing = this.cbDeleteImagesAfterProcessing.Checked;
             SettingsService.SaveApplicationSettings(applicationSettings);
         }
     }

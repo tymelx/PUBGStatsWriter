@@ -50,6 +50,7 @@ namespace PUBGStatsWriter
             this.lblTotalDeathsFilename = new System.Windows.Forms.Label();
             this.lblKillDeathRatioFilename = new System.Windows.Forms.Label();
             this.lblTotalWinsFilename = new System.Windows.Forms.Label();
+            this.cbDeleteImagesAfterProcessing = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -58,13 +59,14 @@ namespace PUBGStatsWriter
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbDeleteImagesAfterProcessing);
             this.groupBox1.Controls.Add(this.btnOCRDirectory);
             this.groupBox1.Controls.Add(this.lblOCR);
             this.groupBox1.Controls.Add(this.btnSelectLabelOutputDirectory);
             this.groupBox1.Controls.Add(this.lblLabelOutputDirectory);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(319, 80);
+            this.groupBox1.Size = new System.Drawing.Size(319, 110);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Setup (Required)";
@@ -113,7 +115,7 @@ namespace PUBGStatsWriter
             this.groupBox2.Controls.Add(this.cbKillDeathRatio);
             this.groupBox2.Controls.Add(this.cbTotalDeaths);
             this.groupBox2.Controls.Add(this.cbTotalKills);
-            this.groupBox2.Location = new System.Drawing.Point(12, 98);
+            this.groupBox2.Location = new System.Drawing.Point(12, 164);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(141, 113);
             this.groupBox2.TabIndex = 1;
@@ -170,7 +172,7 @@ namespace PUBGStatsWriter
             this.groupBox3.Controls.Add(this.lblKillDeathRatioFilename);
             this.groupBox3.Controls.Add(this.lblTotalDeathsFilename);
             this.groupBox3.Controls.Add(this.lblTotalKillsFilename);
-            this.groupBox3.Location = new System.Drawing.Point(159, 98);
+            this.groupBox3.Location = new System.Drawing.Point(159, 164);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.groupBox3.Size = new System.Drawing.Size(172, 113);
@@ -180,7 +182,7 @@ namespace PUBGStatsWriter
             // 
             // btnActivate
             // 
-            this.btnActivate.Location = new System.Drawing.Point(12, 217);
+            this.btnActivate.Location = new System.Drawing.Point(12, 283);
             this.btnActivate.Name = "btnActivate";
             this.btnActivate.Size = new System.Drawing.Size(225, 30);
             this.btnActivate.TabIndex = 3;
@@ -190,7 +192,7 @@ namespace PUBGStatsWriter
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(243, 217);
+            this.btnStop.Location = new System.Drawing.Point(243, 283);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(88, 30);
             this.btnStop.TabIndex = 4;
@@ -204,7 +206,7 @@ namespace PUBGStatsWriter
             this.groupBox4.Controls.Add(this.lblAverageImageScanTimeAmount);
             this.groupBox4.Controls.Add(this.lblAverageImageScanTime);
             this.groupBox4.Controls.Add(this.lblImagesScanned);
-            this.groupBox4.Location = new System.Drawing.Point(12, 253);
+            this.groupBox4.Location = new System.Drawing.Point(12, 319);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(319, 68);
             this.groupBox4.TabIndex = 5;
@@ -283,11 +285,22 @@ namespace PUBGStatsWriter
             this.lblTotalWinsFilename.TabIndex = 5;
             this.lblTotalWinsFilename.Text = "N/A";
             // 
+            // cbDeleteImagesAfterProcessing
+            // 
+            this.cbDeleteImagesAfterProcessing.AutoSize = true;
+            this.cbDeleteImagesAfterProcessing.Location = new System.Drawing.Point(9, 82);
+            this.cbDeleteImagesAfterProcessing.Name = "cbDeleteImagesAfterProcessing";
+            this.cbDeleteImagesAfterProcessing.Size = new System.Drawing.Size(261, 17);
+            this.cbDeleteImagesAfterProcessing.TabIndex = 4;
+            this.cbDeleteImagesAfterProcessing.Text = "Delete Images After Processing? (Recommended)";
+            this.cbDeleteImagesAfterProcessing.UseVisualStyleBackColor = true;
+            this.cbDeleteImagesAfterProcessing.CheckedChanged += new System.EventHandler(this.CbDeleteImagesAfterProcessing_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 332);
+            this.ClientSize = new System.Drawing.Size(343, 396);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnActivate);
@@ -334,6 +347,7 @@ namespace PUBGStatsWriter
         private System.Windows.Forms.Label lblKillDeathRatioFilename;
         private System.Windows.Forms.Label lblTotalDeathsFilename;
         private System.Windows.Forms.Label lblTotalKillsFilename;
+        private System.Windows.Forms.CheckBox cbDeleteImagesAfterProcessing;
     }
 }
 

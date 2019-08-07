@@ -13,25 +13,32 @@ namespace PUBGStatsWriter.Services
     {
         public static string GetImageWords(string imageSource)
         {
-            List<string> foundWords = new List<string>();
-
-            var Ocr = new IronOcr.AdvancedOcr()
+            try
             {
-                CleanBackgroundNoise = false,
-                EnhanceContrast = true,
-                EnhanceResolution = false,
-                Language = IronOcr.Languages.English.OcrLanguagePack,
-                Strategy = IronOcr.AdvancedOcr.OcrStrategy.Fast,
-                ColorSpace = IronOcr.AdvancedOcr.OcrColorSpace.Color,
-                DetectWhiteTextOnDarkBackgrounds = true,
-                InputImageType = IronOcr.AdvancedOcr.InputTypes.Snippet,
-                RotateAndStraighten = false,
-                ReadBarCodes = false,
-                ColorDepth = 20
-            };
+                var Ocr = new IronOcr.AdvancedOcr()
+                {
+                    CleanBackgroundNoise = false,
+                    EnhanceContrast = true,
+                    EnhanceResolution = false,
+                    Language = IronOcr.Languages.English.OcrLanguagePack,
+                    Strategy = IronOcr.AdvancedOcr.OcrStrategy.Fast,
+                    ColorSpace = IronOcr.AdvancedOcr.OcrColorSpace.Color,
+                    DetectWhiteTextOnDarkBackgrounds = true,
+                    InputImageType = IronOcr.AdvancedOcr.InputTypes.Snippet,
+                    RotateAndStraighten = false,
+                    ReadBarCodes = false,
+                    ColorDepth = 20
+                };
 
-            var result = Ocr.Read(imageSource);
-            return result.Text;
+                var result = Ocr.Read(imageSource);
+                return result.Text;
+            }
+            catch(Exception)
+            {
+
+            }
+
+            return String.Empty;
         }
     }
 }
