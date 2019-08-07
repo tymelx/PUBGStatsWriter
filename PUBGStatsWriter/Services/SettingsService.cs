@@ -28,7 +28,7 @@ namespace PUBGStatsWriter.Services
                     applicationSettings = JsonConvert.DeserializeObject<ApplicationSettings>(json);
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
 
             }
@@ -39,6 +39,14 @@ namespace PUBGStatsWriter.Services
         public static void SaveApplicationSettings(ApplicationSettings applicationSettings)
         {
             File.WriteAllText("settings.json", JsonConvert.SerializeObject(applicationSettings));
+        }
+
+        public static void WriteStatsToFiles(ApplicationSettings applicationSettings, PUBGStats stats)
+        {
+            File.WriteAllText(applicationSettings.TotalKillsFilePath, stats.Kills.ToString());
+            File.WriteAllText(applicationSettings.TotalDeathsFilePath, stats.Deaths.ToString());
+            File.WriteAllText(applicationSettings.KillDeathRatioFilePath, stats.KillDeathRatio.ToString());
+            File.WriteAllText(applicationSettings.TotalWinsFilePath, stats.Wins.ToString());
         }
     }
 }

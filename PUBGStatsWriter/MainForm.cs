@@ -114,9 +114,12 @@ namespace PUBGStatsWriter
             directoryWatcher = new FileSystemWatcher();
             directoryWatcher.Path = applicationSettings.ScreenshotDirectory;
             directoryWatcher.NotifyFilter = NotifyFilters.LastWrite;
-            directoryWatcher.Filter = "*.*";
+            directoryWatcher.Filter = "*.jpg";
             directoryWatcher.Changed += new FileSystemEventHandler(OnScreenshotDetected);
             directoryWatcher.EnableRaisingEvents = true;
+
+            PUBGStats = new PUBGStats();
+            SettingsService.WriteStatsToFiles(applicationSettings, PUBGStats);
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -245,7 +248,7 @@ namespace PUBGStatsWriter
             if (writeOutStats)
             {
                 PUBGStats.KillDeathRatio = PUBGStats.Kills / PUBGStats.Deaths;
-                FileWriterService.WriteStatsToFiles(applicationSettings, PUBGStats);
+                SettingsService.WriteStatsToFiles(applicationSettings, PUBGStats);
             }
 
             directoryWatcher.EnableRaisingEvents = true;
