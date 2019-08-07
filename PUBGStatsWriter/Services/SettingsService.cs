@@ -1,6 +1,8 @@
-﻿using PUBGStatsWriter.Models;
+﻿using Newtonsoft.Json;
+using PUBGStatsWriter.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,18 +19,26 @@ namespace PUBGStatsWriter.Services
         public static ApplicationSettings GetApplicationSettings()
         {
             ApplicationSettings applicationSettings = new ApplicationSettings();
+
+            try
+            {
+                using (StreamReader r = new StreamReader("settings.json"))
+                {
+                    string json = r.ReadToEnd();
+                    applicationSettings = JsonConvert.DeserializeObject<ApplicationSettings>(json);
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+
             return applicationSettings;
         }
 
-        /// <summary>
-        /// Will read in an image and analyze the data. Image analysis will tell any of the following things:
-        /// New kill (dont register the same kill twice)
-        /// New death (dont register the same death twice)
-        /// Game won (dont register the same game win twice)
-        /// </summary>
-        public static void AnalyzeScreenshot()
+        public static void SaveApplicationSettings(ApplicationSettings applicationSettings)
         {
-
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(applicationSettings));
         }
     }
 }

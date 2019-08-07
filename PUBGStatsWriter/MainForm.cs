@@ -11,9 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// This is the code for your desktop app.
-// Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-
 namespace PUBGStatsWriter
 {
     public partial class MainForm : Form
@@ -40,6 +37,16 @@ namespace PUBGStatsWriter
             this.cbTotalWins.Checked = applicationSettings.TotalWins;
             this.btnStop.Enabled = false;
 
+            if (!String.IsNullOrEmpty(applicationSettings.OutputDirectory))
+            {
+                btnSelectLabelOutputDirectory.Text = applicationSettings.OutputDirectory;
+            }
+
+            if (!String.IsNullOrEmpty(applicationSettings.ScreenshotDirectory))
+            {
+                btnOCRDirectory.Text = applicationSettings.ScreenshotDirectory;
+            }
+
             this.SetFilenames();
         }
 
@@ -63,6 +70,7 @@ namespace PUBGStatsWriter
                 {
                     applicationSettings.OutputDirectory = fldrDlg.SelectedPath;
                     btnSelectLabelOutputDirectory.Text = applicationSettings.OutputDirectory;
+                    SettingsService.SaveApplicationSettings(applicationSettings);
                 }
             }
         }
@@ -75,6 +83,7 @@ namespace PUBGStatsWriter
                 {
                     applicationSettings.ScreenshotDirectory = fldrDlg.SelectedPath;
                     btnOCRDirectory.Text = applicationSettings.ScreenshotDirectory;
+                    SettingsService.SaveApplicationSettings(applicationSettings);
                 }
             }
         }
@@ -173,6 +182,30 @@ namespace PUBGStatsWriter
             }
 
             directoryWatcher.EnableRaisingEvents = true;
+        }
+
+        private void CbTotalKills_CheckedChanged(object sender, EventArgs e)
+        {
+            applicationSettings.TotalKills = this.cbTotalKills.Checked;
+            SettingsService.SaveApplicationSettings(applicationSettings);
+        }
+
+        private void CbTotalDeaths_CheckedChanged(object sender, EventArgs e)
+        {
+            applicationSettings.TotalDeaths = this.cbTotalDeaths.Checked;
+            SettingsService.SaveApplicationSettings(applicationSettings);
+        }
+
+        private void CbKillDeathRatio_CheckedChanged(object sender, EventArgs e)
+        {
+            applicationSettings.KillDeathRatio = this.cbKillDeathRatio.Checked;
+            SettingsService.SaveApplicationSettings(applicationSettings);
+        }
+
+        private void CbTotalWins_CheckedChanged(object sender, EventArgs e)
+        {
+            applicationSettings.TotalWins = this.cbTotalWins.Checked;
+            SettingsService.SaveApplicationSettings(applicationSettings);
         }
     }
 }

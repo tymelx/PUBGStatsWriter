@@ -129,6 +129,7 @@ namespace PUBGStatsWriter
             this.cbTotalWins.TabIndex = 3;
             this.cbTotalWins.Text = "Total Wins";
             this.cbTotalWins.UseVisualStyleBackColor = true;
+            this.cbTotalWins.CheckedChanged += new System.EventHandler(this.CbTotalWins_CheckedChanged);
             // 
             // cbKillDeathRatio
             // 
@@ -139,6 +140,7 @@ namespace PUBGStatsWriter
             this.cbKillDeathRatio.TabIndex = 2;
             this.cbKillDeathRatio.Text = "Kill Death Ratio";
             this.cbKillDeathRatio.UseVisualStyleBackColor = true;
+            this.cbKillDeathRatio.CheckedChanged += new System.EventHandler(this.CbKillDeathRatio_CheckedChanged);
             // 
             // cbTotalDeaths
             // 
@@ -149,6 +151,7 @@ namespace PUBGStatsWriter
             this.cbTotalDeaths.TabIndex = 3;
             this.cbTotalDeaths.Text = "Total Deaths";
             this.cbTotalDeaths.UseVisualStyleBackColor = true;
+            this.cbTotalDeaths.CheckedChanged += new System.EventHandler(this.CbTotalDeaths_CheckedChanged);
             // 
             // cbTotalKills
             // 
@@ -159,6 +162,7 @@ namespace PUBGStatsWriter
             this.cbTotalKills.TabIndex = 2;
             this.cbTotalKills.Text = "Total Kills";
             this.cbTotalKills.UseVisualStyleBackColor = true;
+            this.cbTotalKills.CheckedChanged += new System.EventHandler(this.CbTotalKills_CheckedChanged);
             // 
             // groupBox3
             // 

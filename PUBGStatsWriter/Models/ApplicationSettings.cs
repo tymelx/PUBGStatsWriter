@@ -8,7 +8,6 @@ namespace PUBGStatsWriter.Models
 {
     public class ApplicationSettings
     {
-        public string PUBGName { get; set; }
         public string OutputDirectory { get; set; }
         public string ScreenshotDirectory { get; set; }
 
