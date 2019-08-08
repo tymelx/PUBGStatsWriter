@@ -40,20 +40,25 @@ namespace PUBGStatsWriter.Services
         //SetGrayscale
         public static Bitmap SetGrayscale(Bitmap img)
         {
-            Bitmap temp = (Bitmap)img;
-            Bitmap bmap = (Bitmap)temp.Clone();
-            Color c;
-            for (int i = 0; i < bmap.Width; i++)
+            using (Bitmap temp = (Bitmap)img)
             {
-                for (int j = 0; j < bmap.Height; j++)
+                using (Bitmap bmap = (Bitmap)temp.Clone())
                 {
-                    c = bmap.GetPixel(i, j);
-                    byte gray = (byte)(.299 * c.R + .587 * c.G + .114 * c.B);
+                    Color c;
+                    for (int i = 0; i < bmap.Width; i++)
+                    {
+                        for (int j = 0; j < bmap.Height; j++)
+                        {
+                            c = bmap.GetPixel(i, j);
+                            byte gray = (byte)(.299 * c.R + .587 * c.G + .114 * c.B);
 
-                    bmap.SetPixel(i, j, Color.FromArgb(gray, gray, gray));
+                            bmap.SetPixel(i, j, Color.FromArgb(gray, gray, gray));
+                        }
+                    }
+
+                    return (Bitmap)bmap.Clone();
                 }
             }
-            return (Bitmap)bmap.Clone();
         }
 
         //RemoveNoise

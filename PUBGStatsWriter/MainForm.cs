@@ -26,6 +26,7 @@ namespace PUBGStatsWriter
         private double totalProcessingTime = 0;
 
         delegate void SetTextCallback(string text); //for weird cross thready stuff
+        private HashSet<string> imagesToProcess = new HashSet<string>();
 
         public MainForm()
         {
@@ -115,6 +116,10 @@ namespace PUBGStatsWriter
             this.btnAddKill.Enabled = true;
             this.btnRemoveKill.Enabled = true;
 
+            totalProcessingTime = 0;
+            totalScreenProcessed = 0;
+            imagesToProcess.Clear();
+
             SetKillsLabel("0");
             SetDeathsLabel("0");
             SetAverageProcessingTimeLabel("0");
@@ -138,6 +143,8 @@ namespace PUBGStatsWriter
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            directoryWatcher.EnableRaisingEvents = false;
+
             this.btnStop.Enabled = false;
             this.btnActivate.Enabled = true;
             this.btnSelectLabelOutputDirectory.Enabled = true;
@@ -208,12 +215,27 @@ namespace PUBGStatsWriter
 
         private void OnScreenshotDetected(object source, FileSystemEventArgs e)
         {
+            if (!imagesToProcess.Contains(e.FullPath))
+            {
+                imagesToProcess.Add(e.FullPath);
+
+                /*
+                 * Thread it up!
+                 */ 
+                new Task(() =>
+                {
+                    ProcessScreenshot(e.FullPath);
+                }).Start();
+            }
+        }
+
+        private void ProcessScreenshot(string filePath)
+        {
             bool writeOutStats = false;
-            directoryWatcher.EnableRaisingEvents = false; //set this while we process
 
             imageProcessingStopWatch = new Stopwatch();
             imageProcessingStopWatch.Start();
-            string imageText = OCRService.GetImageWords(e.FullPath);
+            string imageText = OCRService.GetImageWords(filePath);
             imageProcessingStopWatch.Stop();
 
             totalScreenProcessed++;
@@ -221,11 +243,6 @@ namespace PUBGStatsWriter
 
             totalProcessingTime += imageProcessingStopWatch.Elapsed.TotalSeconds;
             SetAverageProcessingTimeLabel((totalProcessingTime / totalScreenProcessed).ToString());
-
-            if (this.cbDeleteImagesAfterProcessing.Checked)
-            {
-                File.Delete(e.FullPath); //hard delete this mofo, we dont wanna lose space
-            }
 
             /*
              * Some hacky ass processing right here, but whatever gets the job done, ya know/
@@ -236,18 +253,24 @@ namespace PUBGStatsWriter
                 .SelectMany(z => z.Split(' '))
                 .ToList();
 
-            if (textParts.Contains("kills") || textParts.Contains("kill") || textParts.Count > 2 && textParts[0] == "you" && textParts[1] == "killed")
+            if (textParts.Contains("kills") ||
+                textParts.Contains("kill") ||
+                textParts.Contains("ikill") ||
+                textParts.Count > 2 && textParts[0] == "you" && textParts[1] == "killed" ||
+                textParts.Any(z => z.IndexOf("m)") > -1)
+                )
             {
                 try
                 {
-                    if (DateTime.UtcNow.AddSeconds(-5) > PUBGStats.LastKill)
+                    if (DateTime.UtcNow.AddSeconds(-6) > PUBGStats.LastKill)
                     {
                         PUBGStats.Kills++;
+                        PUBGStats.LastKill = DateTime.UtcNow;
                         SetKillsLabel(PUBGStats.Kills.ToString());
                         writeOutStats = true;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     //Meh
                 }
@@ -267,35 +290,52 @@ namespace PUBGStatsWriter
                         writeOutStats = true;
                     }
                 }
-                catch(Exception ex)
-                {
-
-                }
-            }
-            else if (textParts.Contains("winner"))
-            {
-                try
-                {
-                    if (DateTime.UtcNow.AddMinutes(-20) > PUBGStats.LastWin)
-                    {
-                        //This win happened 20 mins after the last, probs real
-                        PUBGStats.Wins++;
-                        PUBGStats.LastWin = DateTime.UtcNow;
-                        writeOutStats = true;
-                    }
-                }
                 catch (Exception ex)
                 {
 
                 }
             }
+            //else if (textParts.Contains("winner"))
+            //{
+            //    try
+            //    {
+            //        if (DateTime.UtcNow.AddMinutes(-20) > PUBGStats.LastWin)
+            //        {
+            //            //This win happened 20 mins after the last, probs real
+            //            PUBGStats.Wins++;
+            //            PUBGStats.LastWin = DateTime.UtcNow;
+            //            writeOutStats = true;
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //    }
+            //}
 
             if (writeOutStats)
             {
-                WriteStats();
+                try
+                {
+                    WriteStats();
+                }
+                catch (Exception)
+                {
+
+                }
             }
 
-            directoryWatcher.EnableRaisingEvents = true;
+            /*
+             * Wipe the screenshot directory every 10
+             */
+            if (this.cbDeleteImagesAfterProcessing.Checked && totalScreenProcessed % 10 == 0)
+            {
+                DirectoryInfo di = new DirectoryInfo(applicationSettings.ScreenshotDirectory);
+                Parallel.ForEach(di.GetFiles(), file =>
+                {
+                    file.Delete();
+                });
+            }
         }
 
         private void WriteStats()
