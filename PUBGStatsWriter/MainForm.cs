@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -43,6 +44,10 @@ namespace PUBGStatsWriter
             this.cbKillDeathRatio.Checked = applicationSettings.KillDeathRatio;
             this.cbTotalWins.Checked = applicationSettings.TotalWins;
             this.btnStop.Enabled = false;
+            this.btnAddDeath.Enabled = false;
+            this.btnRemoveDeath.Enabled = false;
+            this.btnAddKill.Enabled = false;
+            this.btnRemoveKill.Enabled = false;
 
             if (!String.IsNullOrEmpty(applicationSettings.OutputDirectory))
             {
@@ -105,6 +110,15 @@ namespace PUBGStatsWriter
             this.cbTotalDeaths.Enabled = false;
             this.cbKillDeathRatio.Enabled = false;
             this.cbTotalWins.Enabled = false;
+            this.btnAddDeath.Enabled = true;
+            this.btnRemoveDeath.Enabled = true;
+            this.btnAddKill.Enabled = true;
+            this.btnRemoveKill.Enabled = true;
+
+            SetKillsLabel("0");
+            SetDeathsLabel("0");
+            SetAverageProcessingTimeLabel("0");
+            SetTotalImagesScannedLabel("0");
 
             /*
              * We basically need to watch the OCR directory now for any changes
@@ -132,6 +146,10 @@ namespace PUBGStatsWriter
             this.cbTotalDeaths.Enabled = true;
             this.cbKillDeathRatio.Enabled = true;
             this.cbTotalWins.Enabled = true;
+            this.btnAddDeath.Enabled = false;
+            this.btnRemoveDeath.Enabled = false;
+            this.btnAddKill.Enabled = false;
+            this.btnRemoveKill.Enabled = false;
         }
 
         private void SetTotalImagesScannedLabel(string text)
@@ -162,6 +180,32 @@ namespace PUBGStatsWriter
             }
         }
 
+        private void SetKillsLabel(string text)
+        {
+            if (this.lblKillsAmount.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetKillsLabel);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.lblKillsAmount.Text = text;
+            }
+        }
+
+        private void SetDeathsLabel(string text)
+        {
+            if (this.lblDeathsAmount.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetDeathsLabel);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.lblDeathsAmount.Text = text;
+            }
+        }
+
         private void OnScreenshotDetected(object source, FileSystemEventArgs e)
         {
             bool writeOutStats = false;
@@ -186,24 +230,22 @@ namespace PUBGStatsWriter
             /*
              * Some hacky ass processing right here, but whatever gets the job done, ya know/
              */
-            List<string> textParts = imageText.Split(' ')
-                .Select(z => z.ToLower())
+            List<string> textParts = imageText
+                .Split(' ')
+                .Select(z => z.ToLower().Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " "))
+                .SelectMany(z => z.Split(' '))
                 .ToList();
 
-            if (textParts.Contains("kills"))
+            if (textParts.Contains("kills") || textParts.Contains("kill") || textParts.Count > 2 && textParts[0] == "you" && textParts[1] == "killed")
             {
                 try
                 {
-                    int killsIndex = textParts.IndexOf("kills");
-                    int killAmount = int.Parse(textParts[killsIndex - 1]);
-
-                    if (killAmount > PUBGStats.LastTotalKills)
+                    if (DateTime.UtcNow.AddSeconds(-5) > PUBGStats.LastKill)
                     {
                         PUBGStats.Kills++;
+                        SetKillsLabel(PUBGStats.Kills.ToString());
                         writeOutStats = true;
                     }
-
-                    PUBGStats.LastTotalKills = killAmount;
                 }
                 catch(Exception ex)
                 {
@@ -221,6 +263,7 @@ namespace PUBGStatsWriter
                         //This death ocurred more than 2 minutes after the last, probs real
                         PUBGStats.Deaths++;
                         PUBGStats.LastDeath = DateTime.UtcNow;
+                        SetDeathsLabel(PUBGStats.Deaths.ToString());
                         writeOutStats = true;
                     }
                 }
@@ -249,11 +292,16 @@ namespace PUBGStatsWriter
 
             if (writeOutStats)
             {
-                PUBGStats.KillDeathRatio = PUBGStats.Kills / PUBGStats.Deaths;
-                SettingsService.WriteStatsToFiles(applicationSettings, PUBGStats);
+                WriteStats();
             }
 
             directoryWatcher.EnableRaisingEvents = true;
+        }
+
+        private void WriteStats()
+        {
+            PUBGStats.KillDeathRatio = PUBGStats.Kills / (PUBGStats.Deaths == 0 ? 1 : PUBGStats.Deaths);
+            SettingsService.WriteStatsToFiles(applicationSettings, PUBGStats);
         }
 
         private void CbTotalKills_CheckedChanged(object sender, EventArgs e)
@@ -284,6 +332,34 @@ namespace PUBGStatsWriter
         {
             applicationSettings.DeleteImagesAfterProcessing = this.cbDeleteImagesAfterProcessing.Checked;
             SettingsService.SaveApplicationSettings(applicationSettings);
+        }
+
+        private void BtnAddKill_Click(object sender, EventArgs e)
+        {
+            PUBGStats.Kills++;
+            SetKillsLabel(PUBGStats.Kills.ToString());
+            WriteStats();
+        }
+
+        private void BtnRemoveKill_Click(object sender, EventArgs e)
+        {
+            PUBGStats.Kills--;
+            SetKillsLabel(PUBGStats.Kills.ToString());
+            WriteStats();
+        }
+
+        private void BtnAddDeath_Click(object sender, EventArgs e)
+        {
+            PUBGStats.Deaths++;
+            SetDeathsLabel(PUBGStats.Deaths.ToString());
+            WriteStats();
+        }
+
+        private void BtnRemoveDeath_Click(object sender, EventArgs e)
+        {
+            PUBGStats.Deaths--;
+            SetDeathsLabel(PUBGStats.Deaths.ToString());
+            WriteStats();
         }
     }
 }

@@ -29,6 +29,7 @@ namespace PUBGStatsWriter
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbDeleteImagesAfterProcessing = new System.Windows.Forms.CheckBox();
             this.btnOCRDirectory = new System.Windows.Forms.Button();
             this.lblOCR = new System.Windows.Forms.Label();
             this.btnSelectLabelOutputDirectory = new System.Windows.Forms.Button();
@@ -39,18 +40,25 @@ namespace PUBGStatsWriter
             this.cbTotalDeaths = new System.Windows.Forms.CheckBox();
             this.cbTotalKills = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblTotalWinsFilename = new System.Windows.Forms.Label();
+            this.lblKillDeathRatioFilename = new System.Windows.Forms.Label();
+            this.lblTotalDeathsFilename = new System.Windows.Forms.Label();
+            this.lblTotalKillsFilename = new System.Windows.Forms.Label();
             this.btnActivate = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.lblImagesScanned = new System.Windows.Forms.Label();
-            this.lblAverageImageScanTime = new System.Windows.Forms.Label();
-            this.lblAverageImageScanTimeAmount = new System.Windows.Forms.Label();
             this.lblImagesScannedAmount = new System.Windows.Forms.Label();
-            this.lblTotalKillsFilename = new System.Windows.Forms.Label();
-            this.lblTotalDeathsFilename = new System.Windows.Forms.Label();
-            this.lblKillDeathRatioFilename = new System.Windows.Forms.Label();
-            this.lblTotalWinsFilename = new System.Windows.Forms.Label();
-            this.cbDeleteImagesAfterProcessing = new System.Windows.Forms.CheckBox();
+            this.lblAverageImageScanTimeAmount = new System.Windows.Forms.Label();
+            this.lblAverageImageScanTime = new System.Windows.Forms.Label();
+            this.lblImagesScanned = new System.Windows.Forms.Label();
+            this.lblKills = new System.Windows.Forms.Label();
+            this.lblKillsAmount = new System.Windows.Forms.Label();
+            this.lblDeaths = new System.Windows.Forms.Label();
+            this.lblDeathsAmount = new System.Windows.Forms.Label();
+            this.btnAddKill = new System.Windows.Forms.Button();
+            this.btnRemoveKill = new System.Windows.Forms.Button();
+            this.btnRemoveDeath = new System.Windows.Forms.Button();
+            this.btnAddDeath = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -70,6 +78,17 @@ namespace PUBGStatsWriter
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Setup (Required)";
+            // 
+            // cbDeleteImagesAfterProcessing
+            // 
+            this.cbDeleteImagesAfterProcessing.AutoSize = true;
+            this.cbDeleteImagesAfterProcessing.Location = new System.Drawing.Point(9, 82);
+            this.cbDeleteImagesAfterProcessing.Name = "cbDeleteImagesAfterProcessing";
+            this.cbDeleteImagesAfterProcessing.Size = new System.Drawing.Size(261, 17);
+            this.cbDeleteImagesAfterProcessing.TabIndex = 4;
+            this.cbDeleteImagesAfterProcessing.Text = "Delete Images After Processing? (Recommended)";
+            this.cbDeleteImagesAfterProcessing.UseVisualStyleBackColor = true;
+            this.cbDeleteImagesAfterProcessing.CheckedChanged += new System.EventHandler(this.CbDeleteImagesAfterProcessing_CheckedChanged);
             // 
             // btnOCRDirectory
             // 
@@ -180,6 +199,42 @@ namespace PUBGStatsWriter
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filenames";
             // 
+            // lblTotalWinsFilename
+            // 
+            this.lblTotalWinsFilename.AutoSize = true;
+            this.lblTotalWinsFilename.Location = new System.Drawing.Point(6, 89);
+            this.lblTotalWinsFilename.Name = "lblTotalWinsFilename";
+            this.lblTotalWinsFilename.Size = new System.Drawing.Size(27, 13);
+            this.lblTotalWinsFilename.TabIndex = 5;
+            this.lblTotalWinsFilename.Text = "N/A";
+            // 
+            // lblKillDeathRatioFilename
+            // 
+            this.lblKillDeathRatioFilename.AutoSize = true;
+            this.lblKillDeathRatioFilename.Location = new System.Drawing.Point(6, 66);
+            this.lblKillDeathRatioFilename.Name = "lblKillDeathRatioFilename";
+            this.lblKillDeathRatioFilename.Size = new System.Drawing.Size(27, 13);
+            this.lblKillDeathRatioFilename.TabIndex = 4;
+            this.lblKillDeathRatioFilename.Text = "N/A";
+            // 
+            // lblTotalDeathsFilename
+            // 
+            this.lblTotalDeathsFilename.AutoSize = true;
+            this.lblTotalDeathsFilename.Location = new System.Drawing.Point(6, 43);
+            this.lblTotalDeathsFilename.Name = "lblTotalDeathsFilename";
+            this.lblTotalDeathsFilename.Size = new System.Drawing.Size(27, 13);
+            this.lblTotalDeathsFilename.TabIndex = 3;
+            this.lblTotalDeathsFilename.Text = "N/A";
+            // 
+            // lblTotalKillsFilename
+            // 
+            this.lblTotalKillsFilename.AutoSize = true;
+            this.lblTotalKillsFilename.Location = new System.Drawing.Point(6, 20);
+            this.lblTotalKillsFilename.Name = "lblTotalKillsFilename";
+            this.lblTotalKillsFilename.Size = new System.Drawing.Size(27, 13);
+            this.lblTotalKillsFilename.TabIndex = 2;
+            this.lblTotalKillsFilename.Text = "N/A";
+            // 
             // btnActivate
             // 
             this.btnActivate.Location = new System.Drawing.Point(12, 283);
@@ -202,43 +257,24 @@ namespace PUBGStatsWriter
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.btnRemoveDeath);
+            this.groupBox4.Controls.Add(this.btnAddDeath);
+            this.groupBox4.Controls.Add(this.btnRemoveKill);
+            this.groupBox4.Controls.Add(this.btnAddKill);
+            this.groupBox4.Controls.Add(this.lblDeathsAmount);
+            this.groupBox4.Controls.Add(this.lblDeaths);
+            this.groupBox4.Controls.Add(this.lblKillsAmount);
+            this.groupBox4.Controls.Add(this.lblKills);
             this.groupBox4.Controls.Add(this.lblImagesScannedAmount);
             this.groupBox4.Controls.Add(this.lblAverageImageScanTimeAmount);
             this.groupBox4.Controls.Add(this.lblAverageImageScanTime);
             this.groupBox4.Controls.Add(this.lblImagesScanned);
             this.groupBox4.Location = new System.Drawing.Point(12, 319);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(319, 68);
+            this.groupBox4.Size = new System.Drawing.Size(319, 110);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "DEBUG";
-            // 
-            // lblImagesScanned
-            // 
-            this.lblImagesScanned.AutoSize = true;
-            this.lblImagesScanned.Location = new System.Drawing.Point(6, 23);
-            this.lblImagesScanned.Name = "lblImagesScanned";
-            this.lblImagesScanned.Size = new System.Drawing.Size(87, 13);
-            this.lblImagesScanned.TabIndex = 0;
-            this.lblImagesScanned.Text = "Images Scanned";
-            // 
-            // lblAverageImageScanTime
-            // 
-            this.lblAverageImageScanTime.AutoSize = true;
-            this.lblAverageImageScanTime.Location = new System.Drawing.Point(6, 43);
-            this.lblAverageImageScanTime.Name = "lblAverageImageScanTime";
-            this.lblAverageImageScanTime.Size = new System.Drawing.Size(133, 13);
-            this.lblAverageImageScanTime.TabIndex = 1;
-            this.lblAverageImageScanTime.Text = "Average Image Scan Time";
-            // 
-            // lblAverageImageScanTimeAmount
-            // 
-            this.lblAverageImageScanTimeAmount.AutoSize = true;
-            this.lblAverageImageScanTimeAmount.Location = new System.Drawing.Point(144, 43);
-            this.lblAverageImageScanTimeAmount.Name = "lblAverageImageScanTimeAmount";
-            this.lblAverageImageScanTimeAmount.Size = new System.Drawing.Size(13, 13);
-            this.lblAverageImageScanTimeAmount.TabIndex = 2;
-            this.lblAverageImageScanTimeAmount.Text = "0";
             // 
             // lblImagesScannedAmount
             // 
@@ -249,58 +285,114 @@ namespace PUBGStatsWriter
             this.lblImagesScannedAmount.TabIndex = 3;
             this.lblImagesScannedAmount.Text = "0";
             // 
-            // lblTotalKillsFilename
+            // lblAverageImageScanTimeAmount
             // 
-            this.lblTotalKillsFilename.AutoSize = true;
-            this.lblTotalKillsFilename.Location = new System.Drawing.Point(6, 20);
-            this.lblTotalKillsFilename.Name = "lblTotalKillsFilename";
-            this.lblTotalKillsFilename.Size = new System.Drawing.Size(27, 13);
-            this.lblTotalKillsFilename.TabIndex = 2;
-            this.lblTotalKillsFilename.Text = "N/A";
+            this.lblAverageImageScanTimeAmount.AutoSize = true;
+            this.lblAverageImageScanTimeAmount.Location = new System.Drawing.Point(144, 43);
+            this.lblAverageImageScanTimeAmount.Name = "lblAverageImageScanTimeAmount";
+            this.lblAverageImageScanTimeAmount.Size = new System.Drawing.Size(13, 13);
+            this.lblAverageImageScanTimeAmount.TabIndex = 2;
+            this.lblAverageImageScanTimeAmount.Text = "0";
             // 
-            // lblTotalDeathsFilename
+            // lblAverageImageScanTime
             // 
-            this.lblTotalDeathsFilename.AutoSize = true;
-            this.lblTotalDeathsFilename.Location = new System.Drawing.Point(6, 43);
-            this.lblTotalDeathsFilename.Name = "lblTotalDeathsFilename";
-            this.lblTotalDeathsFilename.Size = new System.Drawing.Size(27, 13);
-            this.lblTotalDeathsFilename.TabIndex = 3;
-            this.lblTotalDeathsFilename.Text = "N/A";
+            this.lblAverageImageScanTime.AutoSize = true;
+            this.lblAverageImageScanTime.Location = new System.Drawing.Point(6, 43);
+            this.lblAverageImageScanTime.Name = "lblAverageImageScanTime";
+            this.lblAverageImageScanTime.Size = new System.Drawing.Size(133, 13);
+            this.lblAverageImageScanTime.TabIndex = 1;
+            this.lblAverageImageScanTime.Text = "Average Image Scan Time";
             // 
-            // lblKillDeathRatioFilename
+            // lblImagesScanned
             // 
-            this.lblKillDeathRatioFilename.AutoSize = true;
-            this.lblKillDeathRatioFilename.Location = new System.Drawing.Point(6, 66);
-            this.lblKillDeathRatioFilename.Name = "lblKillDeathRatioFilename";
-            this.lblKillDeathRatioFilename.Size = new System.Drawing.Size(27, 13);
-            this.lblKillDeathRatioFilename.TabIndex = 4;
-            this.lblKillDeathRatioFilename.Text = "N/A";
+            this.lblImagesScanned.AutoSize = true;
+            this.lblImagesScanned.Location = new System.Drawing.Point(6, 23);
+            this.lblImagesScanned.Name = "lblImagesScanned";
+            this.lblImagesScanned.Size = new System.Drawing.Size(87, 13);
+            this.lblImagesScanned.TabIndex = 0;
+            this.lblImagesScanned.Text = "Images Scanned";
             // 
-            // lblTotalWinsFilename
+            // lblKills
             // 
-            this.lblTotalWinsFilename.AutoSize = true;
-            this.lblTotalWinsFilename.Location = new System.Drawing.Point(6, 89);
-            this.lblTotalWinsFilename.Name = "lblTotalWinsFilename";
-            this.lblTotalWinsFilename.Size = new System.Drawing.Size(27, 13);
-            this.lblTotalWinsFilename.TabIndex = 5;
-            this.lblTotalWinsFilename.Text = "N/A";
+            this.lblKills.AutoSize = true;
+            this.lblKills.Location = new System.Drawing.Point(6, 64);
+            this.lblKills.Name = "lblKills";
+            this.lblKills.Size = new System.Drawing.Size(25, 13);
+            this.lblKills.TabIndex = 4;
+            this.lblKills.Text = "Kills";
             // 
-            // cbDeleteImagesAfterProcessing
+            // lblKillsAmount
             // 
-            this.cbDeleteImagesAfterProcessing.AutoSize = true;
-            this.cbDeleteImagesAfterProcessing.Location = new System.Drawing.Point(9, 82);
-            this.cbDeleteImagesAfterProcessing.Name = "cbDeleteImagesAfterProcessing";
-            this.cbDeleteImagesAfterProcessing.Size = new System.Drawing.Size(261, 17);
-            this.cbDeleteImagesAfterProcessing.TabIndex = 4;
-            this.cbDeleteImagesAfterProcessing.Text = "Delete Images After Processing? (Recommended)";
-            this.cbDeleteImagesAfterProcessing.UseVisualStyleBackColor = true;
-            this.cbDeleteImagesAfterProcessing.CheckedChanged += new System.EventHandler(this.CbDeleteImagesAfterProcessing_CheckedChanged);
+            this.lblKillsAmount.AutoSize = true;
+            this.lblKillsAmount.Location = new System.Drawing.Point(144, 64);
+            this.lblKillsAmount.Name = "lblKillsAmount";
+            this.lblKillsAmount.Size = new System.Drawing.Size(13, 13);
+            this.lblKillsAmount.TabIndex = 5;
+            this.lblKillsAmount.Text = "0";
+            // 
+            // lblDeaths
+            // 
+            this.lblDeaths.AutoSize = true;
+            this.lblDeaths.Location = new System.Drawing.Point(6, 88);
+            this.lblDeaths.Name = "lblDeaths";
+            this.lblDeaths.Size = new System.Drawing.Size(41, 13);
+            this.lblDeaths.TabIndex = 6;
+            this.lblDeaths.Text = "Deaths";
+            // 
+            // lblDeathsAmount
+            // 
+            this.lblDeathsAmount.AutoSize = true;
+            this.lblDeathsAmount.Location = new System.Drawing.Point(144, 88);
+            this.lblDeathsAmount.Name = "lblDeathsAmount";
+            this.lblDeathsAmount.Size = new System.Drawing.Size(13, 13);
+            this.lblDeathsAmount.TabIndex = 7;
+            this.lblDeathsAmount.Text = "0";
+            // 
+            // btnAddKill
+            // 
+            this.btnAddKill.Location = new System.Drawing.Point(195, 59);
+            this.btnAddKill.Name = "btnAddKill";
+            this.btnAddKill.Size = new System.Drawing.Size(56, 23);
+            this.btnAddKill.TabIndex = 6;
+            this.btnAddKill.Text = "+";
+            this.btnAddKill.UseVisualStyleBackColor = true;
+            this.btnAddKill.Click += new System.EventHandler(this.BtnAddKill_Click);
+            // 
+            // btnRemoveKill
+            // 
+            this.btnRemoveKill.Location = new System.Drawing.Point(257, 59);
+            this.btnRemoveKill.Name = "btnRemoveKill";
+            this.btnRemoveKill.Size = new System.Drawing.Size(56, 23);
+            this.btnRemoveKill.TabIndex = 8;
+            this.btnRemoveKill.Text = "-";
+            this.btnRemoveKill.UseVisualStyleBackColor = true;
+            this.btnRemoveKill.Click += new System.EventHandler(this.BtnRemoveKill_Click);
+            // 
+            // btnRemoveDeath
+            // 
+            this.btnRemoveDeath.Location = new System.Drawing.Point(257, 83);
+            this.btnRemoveDeath.Name = "btnRemoveDeath";
+            this.btnRemoveDeath.Size = new System.Drawing.Size(56, 23);
+            this.btnRemoveDeath.TabIndex = 10;
+            this.btnRemoveDeath.Text = "-";
+            this.btnRemoveDeath.UseVisualStyleBackColor = true;
+            this.btnRemoveDeath.Click += new System.EventHandler(this.BtnRemoveDeath_Click);
+            // 
+            // btnAddDeath
+            // 
+            this.btnAddDeath.Location = new System.Drawing.Point(195, 83);
+            this.btnAddDeath.Name = "btnAddDeath";
+            this.btnAddDeath.Size = new System.Drawing.Size(56, 23);
+            this.btnAddDeath.TabIndex = 9;
+            this.btnAddDeath.Text = "+";
+            this.btnAddDeath.UseVisualStyleBackColor = true;
+            this.btnAddDeath.Click += new System.EventHandler(this.BtnAddDeath_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 396);
+            this.ClientSize = new System.Drawing.Size(343, 441);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnActivate);
@@ -348,6 +440,14 @@ namespace PUBGStatsWriter
         private System.Windows.Forms.Label lblTotalDeathsFilename;
         private System.Windows.Forms.Label lblTotalKillsFilename;
         private System.Windows.Forms.CheckBox cbDeleteImagesAfterProcessing;
+        private System.Windows.Forms.Label lblDeathsAmount;
+        private System.Windows.Forms.Label lblDeaths;
+        private System.Windows.Forms.Label lblKillsAmount;
+        private System.Windows.Forms.Label lblKills;
+        private System.Windows.Forms.Button btnRemoveDeath;
+        private System.Windows.Forms.Button btnAddDeath;
+        private System.Windows.Forms.Button btnRemoveKill;
+        private System.Windows.Forms.Button btnAddKill;
     }
 }
 
