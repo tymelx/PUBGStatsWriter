@@ -210,11 +210,13 @@ namespace PUBGStatsWriter
                     //Meh
                 }
             }
-            else if (textParts.Contains("next") || textParts.Any(z => z.IndexOf("time!") > -1))
+            //else if (textParts.Contains("next") || textParts.Any(z => z.IndexOf("time!") > -1))
+            else if (textParts.Contains("killed"))
             {
                 try
                 {
-                    if (DateTime.UtcNow.AddMinutes(-2) > PUBGStats.LastDeath)
+                    int killedIndex = textParts.IndexOf("killed");
+                    if (textParts[killedIndex + 1] == "you" && DateTime.UtcNow.AddMinutes(-2) > PUBGStats.LastDeath)
                     {
                         //This death ocurred more than 2 minutes after the last, probs real
                         PUBGStats.Deaths++;

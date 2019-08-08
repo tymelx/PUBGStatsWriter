@@ -66,9 +66,14 @@ namespace PUBGScreenCapper
 
         private void TakeScreenshot(object sender, EventArgs e)
         {
-            Bitmap bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            Bitmap bmpScreenshot = new Bitmap(1000, 100);
+            bmpScreenshot.SetResolution(300, 300);
             Graphics g = Graphics.FromImage(bmpScreenshot);
-            g.CopyFromScreen(Point.Empty, Point.Empty, Screen.GetBounds(Point.Empty).Size);
+
+            int x = 500;
+            int y = 700;
+
+            g.CopyFromScreen(x, y, 0, 0, new Size(1000, 100));
 
             string fileName = String.Format("screencap{0}.jpg", currentScreenshotCount++);
             bmpScreenshot.Save(String.Format("{0}\\{1}", applicationSettings.OutputDirectory, fileName), System.Drawing.Imaging.ImageFormat.Jpeg);
